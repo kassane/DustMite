@@ -1,8 +1,0 @@
-name "dustmite"
-description "General-purpose data reduction tool"
-authors "Vladimir Panteleev"
-license "Boost"
-targetPath "."
-sourceFiles "dustmite.d" "polyhash.d" "splitter.d"
-targetType "executable"
-mainSourceFile "dustmite.d"

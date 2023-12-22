@@ -6,3 +6,6 @@
 dustmite
 /cov/
 /.dub/
+*.a
+*.so
+*.lib

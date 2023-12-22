@@ -1,0 +1,23 @@
+{
+	"authors": [
+		"Vladimir Panteleev"
+	],
+	"description": "General-purpose data reduction tool",
+	"lflags": ["-L."],
+	"libs": [
+		"ziglex"
+	],
+	"preBuildCommands": [
+		"zig build-lib -fcompiler-rt -Doptimize=ReleaseSafe -fPIE -fPIC ziglex.zig"
+	],
+	"license": "Boost",
+	"mainSourceFile": "dustmite.d",
+	"name": "dustmite",
+	"sourceFiles": [
+		"dustmite.d",
+		"polyhash.d",
+		"splitter.d"
+	],
+	"targetPath": "bin",
+	"targetType": "executable"
+}

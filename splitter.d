@@ -154,6 +154,7 @@ enum Splitter
 	diff,      /// Unified diffs
 	indent,    /// Indentation (Python, YAML...)
 	lisp,      /// Lisp and similar languages
+	zig,
 }
 immutable string[] splitterNames = [EnumMembers!Splitter].map!(e => e.text().toLower().chomp("_")).array();
 
@@ -271,6 +272,8 @@ immutable ParseRule[] defaultRules =
 	{ "*.lsp"  , Splitter.lisp  },
 	{ "*.el"   , Splitter.lisp  },
 
+	{ "*.zig"  , Splitter.zig   },
+
 	{ "*"      , Splitter.files },
 ];
 
@@ -361,6 +364,9 @@ Entity loadFile(string name, string path, ParseOptions options)
 			break;
 		case Splitter.lisp:
 			result.children = parseLisp(result.contents);
+			break;
+		case Splitter.zig:
+			result.children = parseZig(result.contents);
 			break;
 	}
 
@@ -1749,6 +1755,24 @@ Entity[] parseLisp(string s)
 	}
 
 	return parse(true);
+}
+
+// NOTE: currently we're just lexing the zig source into a flat set
+//       of tokens rather than creating a tree, so reductions won't
+//       be able to do more than remove individual tokens for now.
+extern (C) size_t zigLex(immutable(char) *src, size_t src_len, size_t offset);
+
+Entity[] parseZig(string src)
+{
+	string src_nullterm = src ~ "\0";
+	Entity[] result;
+        size_t offset = 0;
+        while (offset < src.length) {
+		size_t next = zigLex(src_nullterm.ptr, src.length, offset);
+		result ~= new Entity(src_nullterm[offset..next]);
+		offset = next;
+	}
+	return result;
 }
 
 private:
